@@ -132,7 +132,9 @@ int main()
         Middle_Earth *new_bad = CreateRace(type_1_ob);
         Bad_stack.Push(new_bad);
     }
-
+    Iterator<Middle_Earth*> *it = new Massive_Stack_Iterator<Middle_Earth*>(&Bad_stack);
+    CommonPrint(it);
+    delete it;
 
 
     Vector_stack<Middle_Earth*> Good_stack;
