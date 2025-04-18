@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1744914276 source:d:\for_c++\oop\main.cpp
+1744979330 source:d:\for_c++\oop\main.cpp
 	<iostream>
 	"Stacks_Iterators.h"
 	<vector>
 
-1744915649 d:\for_c++\oop\stacks_iterators.h
+1744980178 d:\for_c++\oop\stacks_iterators.h
 	<iostream>
 	<vector>
 
