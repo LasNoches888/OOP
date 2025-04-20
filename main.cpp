@@ -214,18 +214,18 @@ int main()
     delete goodIt;
 
 
-    list<Middle_Earth*> fruitVector; // а еще можно vector, forward_list, ...
+    list<Middle_Earth*> RaceVector; // а еще можно vector, forward_list, ...
     for(size_t i=0; i<10; i++)
     {
         int rac_num1 = rand()%2+1; // Число от 1 до 3 (случайный фрукт)
         RaceType Race_type = static_cast<RaceType>(rac_num1);
         Middle_Earth *newrace2 = CreateRace(Race_type);
-        fruitVector.push_back(newrace2); // Добавить новый фрукт в конец списка
+        RaceVector.push_back(newrace2); // Добавить новый фрукт в конец списка
     }
 
 
-    cout << "Eating all good orange using adapted iterator (another container):" << endl;
-    Iterator<Middle_Earth*> *adaptedIt = new ConstIteratorAdapter<std::list<Middle_Earth*>, Middle_Earth*>(&fruitVector);
+    cout << "Eating all good race using adapted iterator:" << endl;
+    Iterator<Middle_Earth*> *adaptedIt = new ConstIteratorAdapter<std::list<Middle_Earth*>, Middle_Earth*>(&RaceVector);
     Iterator<Middle_Earth*> *adaptedOrangeIt = new RaceGoodDecorator(adaptedIt, true);
     RaceGood(adaptedOrangeIt);
     delete adaptedOrangeIt;
