@@ -134,5 +134,28 @@ public:
     virtual ItemType GetCurrent() const { return *It; }
 };
 
+class HowToFigthing
+{
+public:
+    virtual void War() = 0;
+    virtual ~HowToFigthing() {}
+};
+
+class Orc_figthing : public HowToFigthing
+{
+    void War() override {cout<<"Orcs using old weapons and dead people...";}
+};
+
+class Elves_figthing : public HowToFigthing
+{
+    void War() override {cout<<" Elves using skillful weapon and help of Ents...";}
+};
+
+class Human_figthing : public HowToFigthing
+{
+    void War() override {cout<<"Human using iron weapons and catapults...";}
+};
+
+
 
 #endif // STACKS_ITERATORS_H_INCLUDED

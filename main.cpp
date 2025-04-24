@@ -4,9 +4,14 @@
 #include <list>
 using namespace std;
 
+enum class RaceWar : int
+{
+    Shred,
+    ShootBow,
+    Chop
+};
 
-
-enum class RaceType
+enum class RaceType : int
 {
     Bad_races = 1,
     Elves = 2,
@@ -18,13 +23,21 @@ class Middle_Earth
 {
 protected:
     RaceType side;
+    HowToFigthing* WarManner;
+    void DoHowToWar() {
+    if (WarManner == nullptr) {
+        cout << "Do nothing!";
+        return;
+    }
+    WarManner->War(); // Вызов стратегии
+    }
 public:
     string name;
     int year;
     string place;
     Middle_Earth(string n, int y, string p, RaceType s) : name(n), year(y), place(p), side(s) {}
 
-    virtual void Print() const = 0;
+//    virtual void Print() const = 0;
     ~Middle_Earth() {}
     virtual RaceType GetSide() const {return side;}
 
@@ -32,8 +45,36 @@ public:
     {
         return side == RaceType::Elves || side == RaceType::Humans;
     }
+    void SetHowToWar(HowToFigthing* warmanner) {
+    WarManner = warmanner;
+    }
+
+
+
+    void Fight() {
+    cout << name << " fights: ";
+    DoHowToWar();
+    cout << endl;
+}
 
 };
+
+
+
+
+HowToFigthing* CreateWarStrategy(RaceWar type)
+{
+    switch(type) {
+    case RaceWar::Shred:
+        return new Orc_figthing;
+    case RaceWar::ShootBow:
+        return new Elves_figthing;
+    case RaceWar::Chop:
+        return new Human_figthing;
+    default:
+        return nullptr;
+    }
+}
 
 class Elves : public Middle_Earth
 {
@@ -43,11 +84,14 @@ public:
     bool in_films;
 
     Elves(string n = "Elves", int y = 1000, string p = "West", string k = "Rivendel", int v = 10000, bool in = true)
-     : Middle_Earth(n, y, p, RaceType::Elves), kind_of_elves(k), values(v), in_films(in) {}
-     void Print() const override
+     : Middle_Earth(n, y, p, RaceType::Elves), kind_of_elves(k), values(v), in_films(in)
      {
-         cout<<"One of races: "<<name<<endl;
+        SetHowToWar(CreateWarStrategy(RaceWar::ShootBow));
      }
+//     void Print() const override
+//     {
+//         cout<<"One of races: "<<name<<endl;
+//     }
 };
 
 
@@ -59,11 +103,14 @@ public:
     bool win_or_not;
 
     Bad_races(string n = "Orcs", int y = 1500, string p = "Mordor", string koe = "Mordor's orcs", int h = 50000, bool w = false )
-     : Middle_Earth(n, y, p, RaceType::Bad_races), kind_of_evil(koe), howmany(h), win_or_not(w) {}
-    void Print() const override
+     : Middle_Earth(n, y, p, RaceType::Bad_races), kind_of_evil(koe), howmany(h), win_or_not(w)
      {
-         cout<<"One of races: "<<name<<endl;
+        SetHowToWar(CreateWarStrategy(RaceWar::Shred));
      }
+//    void Print() const override
+//     {
+//         cout<<"One of races: "<<name<<endl;
+//     }
 
 
 };
@@ -76,11 +123,14 @@ public:
 
 
     Human(string n = "Humans", int y = 2000, string p = "Gondor", string p_side = "With good mans", int val_arnor = 1 )
-     : Middle_Earth(n, y, p, RaceType::Humans), Parents_side(p_side), value_of_Arnors_sons(val_arnor) {}
-        void Print() const override
+     : Middle_Earth(n, y, p, RaceType::Humans), Parents_side(p_side), value_of_Arnors_sons(val_arnor)
      {
-         cout<<"One of races: "<<name<<endl;
+        SetHowToWar(CreateWarStrategy(RaceWar::Chop));
      }
+//        void Print() const override
+//     {
+//         cout<<"One of races: "<<name<<endl;
+//     }
 
 };
 
@@ -104,26 +154,33 @@ Middle_Earth *CreateRace(RaceType type)
 }
 
 
-void CommonPrint(Iterator<Middle_Earth*> *it)
-{
-    for(it->First(); !it->IsDone(); it->Next())
-    {
-        Middle_Earth* current_race = it->GetCurrent();
-        current_race->Print();
-    }
-}
 
 
-void RaceGood(Iterator<Middle_Earth*> *it)
-{
-    for(it->First(); !it->IsDone(); it->Next())
-    {
-        Middle_Earth *current_race = it->GetCurrent();
-        if(!current_race->IsGood()) continue;
 
-        current_race->Print();
-    }
-}
+
+
+//void CommonPrint(Iterator<Middle_Earth*> *it)
+//{
+//    for(it->First(); !it->IsDone(); it->Next())
+//    {
+//        Middle_Earth* current_race = it->GetCurrent();
+//        current_race->Print();
+//    }
+//}
+
+
+//void RaceGood(Iterator<Middle_Earth*> *it)
+//{
+//    for(it->First(); !it->IsDone(); it->Next())
+//    {
+//        Middle_Earth *current_race = it->GetCurrent();
+//        if(!current_race->IsGood()) continue;
+//
+//        current_race->Print();
+//    }
+//}
+
+
 
 
 class RaceGoodDecorator : public IteratorDecorator<Middle_Earth*>
@@ -188,14 +245,15 @@ int main()
     {
         Middle_Earth *new_good = CreateRace(type_2_ob);
         Good_stack.Add(new_good);
+
     }
 
-    Iterator<Middle_Earth*> *it = new Massive_Stack_Iterator<Middle_Earth*>(&Bad_stack);
-    CommonPrint(it);
-    delete it;
-    Iterator<Middle_Earth*> *it2 = new Vector_Iterator<Middle_Earth*>(&Good_stack);
-    CommonPrint(it2);
-    delete it2;
+//    Iterator<Middle_Earth*> *it = new Massive_Stack_Iterator<Middle_Earth*>(&Bad_stack);
+//    CommonPrint(it);
+//    delete it;
+//    Iterator<Middle_Earth*> *it2 = new Vector_Iterator<Middle_Earth*>(&Good_stack);
+//    CommonPrint(it2);
+//    delete it2;
 
 
     Massive_Stack<Middle_Earth*> All_Races;
@@ -208,10 +266,10 @@ int main()
     }
 
 
-    cout << endl << "Show all good races with iterator:" << endl;
-    Iterator<Middle_Earth*> *goodIt = new RaceGoodDecorator(All_Races.GetIterator(), true);
-    RaceGood(goodIt);
-    delete goodIt;
+//    cout << endl << "Show all good races with iterator:" << endl;
+//    Iterator<Middle_Earth*> *goodIt = new RaceGoodDecorator(All_Races.GetIterator(), true);
+//    RaceGood(goodIt);
+//    delete goodIt;
 
 
     list<Middle_Earth*> RaceVector; // а еще можно vector, forward_list, ...
@@ -220,6 +278,7 @@ int main()
         int rac_num1 = rand()%2+1; // Число от 1 до 3 (случайный фрукт)
         RaceType Race_type = static_cast<RaceType>(rac_num1);
         Middle_Earth *newrace2 = CreateRace(Race_type);
+        newrace2->Fight();
         RaceVector.push_back(newrace2); // Добавить новый фрукт в конец списка
     }
 
@@ -227,8 +286,9 @@ int main()
     cout << "Eating all good race using adapted iterator:" << endl;
     Iterator<Middle_Earth*> *adaptedIt = new ConstIteratorAdapter<std::list<Middle_Earth*>, Middle_Earth*>(&RaceVector);
     Iterator<Middle_Earth*> *adaptedOrangeIt = new RaceGoodDecorator(adaptedIt, true);
-    RaceGood(adaptedOrangeIt);
+//    RaceGood(adaptedOrangeIt);
     delete adaptedOrangeIt;
+
 
 }
 
