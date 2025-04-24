@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1745525414 source:d:\for_c++\oop\main.cpp
+1745530132 source:d:\for_c++\oop\main.cpp
 	<iostream>
 	"Stacks_Iterators.h"
 	<vector>

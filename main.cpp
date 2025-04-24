@@ -29,7 +29,10 @@ protected:
         cout << "Do nothing!";
         return;
     }
-    WarManner->War(); // Вызов стратегии
+    else
+    {
+        WarManner->War();
+    }
     }
 public:
     string name;
@@ -37,7 +40,8 @@ public:
     string place;
     Middle_Earth(string n, int y, string p, RaceType s) : name(n), year(y), place(p), side(s) {}
 
-//    virtual void Print() const = 0;
+    virtual void Prepare() const = 0;
+    virtual void Print() const = 0;
     ~Middle_Earth() {}
     virtual RaceType GetSide() const {return side;}
 
@@ -50,12 +54,13 @@ public:
     }
 
 
-
-    void Fight() {
-    cout << name << " fights: ";
-    DoHowToWar();
-    cout << endl;
-}
+    //Функция с реализацией
+    void Fight()
+    {
+        Prepare();
+        DoHowToWar();
+        cout << endl;
+    }
 
 };
 
@@ -88,10 +93,14 @@ public:
      {
         SetHowToWar(CreateWarStrategy(RaceWar::ShootBow));
      }
-//     void Print() const override
-//     {
-//         cout<<"One of races: "<<name<<endl;
-//     }
+     void Prepare() const override
+     {
+         cout<<"Pulling the bowstring...";
+     }
+     void Print() const override
+     {
+         cout<<name<<"--";
+     }
 };
 
 
@@ -107,11 +116,14 @@ public:
      {
         SetHowToWar(CreateWarStrategy(RaceWar::Shred));
      }
-//    void Print() const override
-//     {
-//         cout<<"One of races: "<<name<<endl;
-//     }
-
+     void Prepare() const override
+     {
+         cout<<"Sharpennig rusty weapons...";
+     }
+     void Print() const override
+     {
+         cout<<name<<"--";
+     }
 
 };
 
@@ -127,11 +139,14 @@ public:
      {
         SetHowToWar(CreateWarStrategy(RaceWar::Chop));
      }
-//        void Print() const override
-//     {
-//         cout<<"One of races: "<<name<<endl;
-//     }
-
+     void Prepare() const override
+     {
+         cout<<"Putting the swords in order...";
+     }
+     void Print() const override
+     {
+         cout<<name<<"--";
+     }
 };
 
 Middle_Earth *CreateRace(RaceType type)
@@ -169,16 +184,15 @@ Middle_Earth *CreateRace(RaceType type)
 //}
 
 
-//void RaceGood(Iterator<Middle_Earth*> *it)
-//{
-//    for(it->First(); !it->IsDone(); it->Next())
-//    {
-//        Middle_Earth *current_race = it->GetCurrent();
-//        if(!current_race->IsGood()) continue;
-//
-//        current_race->Print();
-//    }
-//}
+void RaceGood(Iterator<Middle_Earth*> *it)
+{
+    for(it->First(); !it->IsDone(); it->Next())
+    {
+        Middle_Earth *current_race = it->GetCurrent();
+        if(!current_race->IsGood()) continue;
+        current_race->Print();
+    }
+}
 
 
 
@@ -228,24 +242,31 @@ int main()
     int type_2;
     cin>>type_2;
     cout<<endl;
+    cout<<"Enter the value for stack_for_all: ";
+    int value_for_all;
+    cin>>value_for_all;
+    cout<<endl;
+
     RaceType type_1_ob = static_cast<RaceType>(type_1);
     RaceType type_2_ob = static_cast<RaceType>(type_2);
 
+    cout<<"Stack only for bad races: "<<endl;
     Massive_Stack<Middle_Earth*> Bad_stack;
     for(size_t i = 0; i!=orc_value; i++)
     {
         Middle_Earth *new_bad = CreateRace(type_1_ob);
         Bad_stack.Push(new_bad);
+        new_bad->Fight();
     }
 
 
-
+    cout<<"Stack only for good races: "<<endl;
     Vector_stack<Middle_Earth*> Good_stack;
     for(size_t i = 0; i!=good_value; i++)
     {
         Middle_Earth *new_good = CreateRace(type_2_ob);
         Good_stack.Add(new_good);
-
+        new_good->Fight();
     }
 
 //    Iterator<Middle_Earth*> *it = new Massive_Stack_Iterator<Middle_Earth*>(&Bad_stack);
@@ -256,37 +277,38 @@ int main()
 //    delete it2;
 
 
-    Massive_Stack<Middle_Earth*> All_Races;
-    for(size_t i=0; i<10; i++)
-    {
-        int rac_num1 = rand()%2+1; // Число от 1 до 3 (случайный фрукт)
-        RaceType Race_type = static_cast<RaceType>(rac_num1);
-        Middle_Earth *newrace1 = CreateRace(Race_type);
-        All_Races.Push(newrace1);
-    }
+//    Massive_Stack<Middle_Earth*> All_Races;
+//    for(size_t i=0; i<10; i++)
+//    {
+//        int rac_num1 = rand()%2+1; // Число от 1 до 3 (случайный фрукт)
+//        RaceType Race_type = static_cast<RaceType>(rac_num1);
+//        Middle_Earth *newrace1 = CreateRace(Race_type);
+//        All_Races.Push(newrace1);
+//    }
 
-
+    cout<<endl;
+    cout<<endl;
 //    cout << endl << "Show all good races with iterator:" << endl;
 //    Iterator<Middle_Earth*> *goodIt = new RaceGoodDecorator(All_Races.GetIterator(), true);
 //    RaceGood(goodIt);
 //    delete goodIt;
 
-
-    list<Middle_Earth*> RaceVector; // а еще можно vector, forward_list, ...
-    for(size_t i=0; i<10; i++)
+    cout<<"Stack for all races: "<<endl;
+    list<Middle_Earth*> RaceVector;
+    for(size_t i=0; i<value_for_all; i++)
     {
-        int rac_num1 = rand()%2+1; // Число от 1 до 3 (случайный фрукт)
+        int rac_num1 = rand()%2+1;
         RaceType Race_type = static_cast<RaceType>(rac_num1);
         Middle_Earth *newrace2 = CreateRace(Race_type);
         newrace2->Fight();
-        RaceVector.push_back(newrace2); // Добавить новый фрукт в конец списка
+        RaceVector.push_back(newrace2); //
     }
 
 
-    cout << "Eating all good race using adapted iterator:" << endl;
+    cout << "Filtering all races to good using adapted iterator:" << endl;
     Iterator<Middle_Earth*> *adaptedIt = new ConstIteratorAdapter<std::list<Middle_Earth*>, Middle_Earth*>(&RaceVector);
     Iterator<Middle_Earth*> *adaptedOrangeIt = new RaceGoodDecorator(adaptedIt, true);
-//    RaceGood(adaptedOrangeIt);
+    RaceGood(adaptedOrangeIt);
     delete adaptedOrangeIt;
 
 
